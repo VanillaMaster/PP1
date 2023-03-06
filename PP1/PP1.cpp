@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <chrono>
 
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -99,7 +100,20 @@ std::optional<json> loadData(std::string path) {
     }
     catch (const std::exception&)
     {
-        return NULL;
+        return {};
+    }
+}
+
+std::optional<Graph> loadGraph(std::string path) {
+    auto const rawData = loadData(path);
+    if (!rawData.has_value()) return {};
+    auto& data = rawData.value();
+    try {
+        Graph G = Graph::fromJSON(data["adjacency"]);
+        return G;
+    }
+    catch (const std::exception&) {
+        return {};
     }
 }
 
@@ -129,22 +143,28 @@ void print(std::vector<int>& data) {
     std::cout << "\n";
 }
 
+int getChromaticNumber(Graph& G, int chromNum = 1) {
+    for (auto res = checkChromaticNumber(G, chromNum); !res.has_value() ? true : (/*print(res.value()),*/ false); res = checkChromaticNumber(G, ++chromNum));
+    return chromNum;
+}
+
 int main(int argc, char* argv[]) {
 
     if (argc < 2) { return 1; }
 
-    auto resultOpt = loadData(argv[1]);
-
-    if (!resultOpt.has_value()) { return 2; }
-
-    auto& data = resultOpt.value();
-
-    Graph G = Graph::fromJSON(data["adjacency"]);
-
-    int chromNum = 1;
-
-    for (auto res = checkChromaticNumber(G, chromNum); !res.has_value() ? true : (print(res.value()), false); res = checkChromaticNumber(G, ++chromNum));
     
-    std::cout << chromNum;
+
+    if (auto G = loadGraph(argv[1])) {
+        auto start = std::chrono::high_resolution_clock::now();
+        int chromNum = getChromaticNumber(G.value());
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+        std::cout << chromNum << " calculated in: " << duration.count() << std::endl << "used method: 1";
+    }
+    else {
+        std::cout << -1;
+    }
+
+    
 
 }
