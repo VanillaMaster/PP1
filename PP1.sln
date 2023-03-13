@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D7C19AD9
 		..\..\..\..\..\Documents\data\graph2.json = ..\..\..\..\..\Documents\data\graph2.json
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "combinatorV2", "combinatorV2\combinatorV2.vcxproj", "{5B0FB307-F1B2-4D60-A93C-EF32A3762384}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -37,6 +39,14 @@ Global
 		{62F000CC-1C02-4B79-AC30-D1D4D90F6912}.Release|x64.Build.0 = Release|x64
 		{62F000CC-1C02-4B79-AC30-D1D4D90F6912}.Release|x86.ActiveCfg = Release|Win32
 		{62F000CC-1C02-4B79-AC30-D1D4D90F6912}.Release|x86.Build.0 = Release|Win32
+		{5B0FB307-F1B2-4D60-A93C-EF32A3762384}.Debug|x64.ActiveCfg = Debug|x64
+		{5B0FB307-F1B2-4D60-A93C-EF32A3762384}.Debug|x64.Build.0 = Debug|x64
+		{5B0FB307-F1B2-4D60-A93C-EF32A3762384}.Debug|x86.ActiveCfg = Debug|Win32
+		{5B0FB307-F1B2-4D60-A93C-EF32A3762384}.Debug|x86.Build.0 = Debug|Win32
+		{5B0FB307-F1B2-4D60-A93C-EF32A3762384}.Release|x64.ActiveCfg = Release|x64
+		{5B0FB307-F1B2-4D60-A93C-EF32A3762384}.Release|x64.Build.0 = Release|x64
+		{5B0FB307-F1B2-4D60-A93C-EF32A3762384}.Release|x86.ActiveCfg = Release|Win32
+		{5B0FB307-F1B2-4D60-A93C-EF32A3762384}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

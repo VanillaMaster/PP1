@@ -4,10 +4,12 @@
 #include <vector>
 #include <iostream>
 #include <chrono>
-#include <cmath>
 
 #include <fstream>
 #include <nlohmann/json.hpp>
+
+#include "../combinatorV2/combinator.h";
+
 
 using json = nlohmann::json;
 
@@ -53,131 +55,48 @@ private:
     std::vector<bool> data = {};
 };
 
-class CombinatorV2 {
-public:
-    CombinatorV2(size_t length, size_t count): blockCount(length), blockSize(std::ceil(std::log2(count))) {
-        data = new long[(int)std::ceil(blockSize * blockCount / (sizeof(long) * 8))];
-    };
-private:
-    long* data = nullptr;
-
-    const size_t blockSize;
-    const size_t blockCount;
-};
-
-class SimpleCombinator {
-public:
-    SimpleCombinator(int length, int amount) {
-        this->sequence.reserve(length);
-        this->sequence.resize(length);
-        this->sequence.at(0) = -1;
-
-        this->amount = amount;
-    }
-
-    bool hasNext(){
-        return !this->done;
-    }
-    
-    void next() {
-        if (this->done) return;
-        bool done = true;
-        bool inc = true;
-        for (int i = 0; i < this->sequence.size(); i++)
-        {
-            if (inc) {
-                this->sequence.at(i)++;
-                inc = this->sequence.at(i) >= this->amount;
-                if (inc) {
-                    this->sequence.at(i) = 0;
-                }
-            }
-            if (done) done = this->sequence.at(i) + 1 >= this->amount;
-        }
-        this->done = done;
-    }
-
-    std::vector<int> sequence = {};
-
-private:
-    int amount = 0;
-    bool done = false;
-};
-
-std::optional<json> loadData(std::string path) {
-    try
-    {
-        std::ifstream f(path);
-        auto result = json::parse(f);
-        return result;
-    }
-    catch (const std::exception&)
-    {
-        return {};
-    }
+Graph loadGraph(std::string path) {
+    auto data = json::parse(std::ifstream(path));
+    Graph G = Graph::fromJSON(data["adjacency"]);
+    return G;
 }
 
-std::optional<Graph> loadGraph(std::string path) {
-    auto const rawData = loadData(path);
-    if (!rawData.has_value()) return {};
-    auto& data = rawData.value();
-    try {
-        Graph G = Graph::fromJSON(data["adjacency"]);
-        return G;
-    }
-    catch (const std::exception&) {
-        return {};
-    }
-}
-
-std::optional<std::vector<int>> checkChromaticNumber(Graph& G, int num) {
+bool checkChromaticNumber(Graph& G, int num) {
     const int nodes = G.size();
-    auto c = SimpleCombinator(nodes, num);
 
-    while (c.hasNext()) {
-        c.next();
-        for (int i = 0; i < nodes; i++) {
-            auto group = c.sequence.at(i);
+    auto c = CombinatorV2(nodes, num);
+    do {
+        for (int i = 0; i < c.size(); i++) {
+            auto group = c.at(i);
             for (int j = 0; j < nodes; j++) {
                 if (j == i) continue;
-                if (G.areAdjacent(i , j) && group == c.sequence.at(j)) goto outer;
+                if (G.areAdjacent(i, j) && group == c.at(j)) goto outer;
             }
         }
-        return std::vector<int>(c.sequence);
+        return true;
         outer: continue;
-    }
-    return {};
-}
+    } while (!c.next());
 
-void print(std::vector<int>& data) {
-    for (auto num : data) {
-        std::cout << num << " ";
-    }
-    std::cout << "\n";
+    return false;
 }
 
 int getChromaticNumber(Graph& G, int chromNum = 1) {
-    for (auto res = checkChromaticNumber(G, chromNum); !res.has_value() ? true : (/*print(res.value()),*/ false); res = checkChromaticNumber(G, ++chromNum));
+    while (!checkChromaticNumber(G, chromNum)) {
+        chromNum++;
+    }
     return chromNum;
 }
 
 int main(int argc, char* argv[]) {
-
+    
     if (argc < 2) { return 1; }
-
     
+    auto G = loadGraph(argv[1]);
 
-    if (auto G = loadGraph(argv[1])) {
-        auto start = std::chrono::high_resolution_clock::now();
-        int chromNum = getChromaticNumber(G.value());
-        auto stop = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        std::cout << chromNum << " calculated in: " << duration.count() << std::endl << "used method: 1";
-    }
-    else {
-        std::cout << -1;
-    }
-
-    
+    auto start = std::chrono::high_resolution_clock::now();
+    int chromNum = getChromaticNumber(G);
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << chromNum << " calculated in: " << duration.count() << std::endl << "used method: 1";
 
 }
