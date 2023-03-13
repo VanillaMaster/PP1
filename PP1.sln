@@ -9,8 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PP1.5", "PP1.5\PP1.5.vcxpro
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D7C19AD9-9458-446D-88EC-0FBC7FAB0936}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\..\..\Documents\data\graph1.json = ..\..\..\..\..\Documents\data\graph1.json
-		..\..\..\..\..\Documents\data\graph2.json = ..\..\..\..\..\Documents\data\graph2.json
+		data\graph1.json = data\graph1.json
+		data\graph2.json = data\graph2.json
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "combinatorV2", "combinatorV2\combinatorV2.vcxproj", "{5B0FB307-F1B2-4D60-A93C-EF32A3762384}"

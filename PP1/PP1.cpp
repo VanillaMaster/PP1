@@ -10,6 +10,8 @@
 
 #include "../combinatorV2/combinator.h";
 
+//constexpr int BiL = sizeof(long) * 8;
+
 
 using json = nlohmann::json;
 
