@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <chrono>
+#include <cmath>
 
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -50,6 +51,18 @@ private:
     int nodes = 0;
 
     std::vector<bool> data = {};
+};
+
+class CombinatorV2 {
+public:
+    CombinatorV2(size_t length, size_t count): blockCount(length), blockSize(std::ceil(std::log2(count))) {
+        data = new long[(int)std::ceil(blockSize * blockCount / (sizeof(long) * 8))];
+    };
+private:
+    long* data = nullptr;
+
+    const size_t blockSize;
+    const size_t blockCount;
 };
 
 class SimpleCombinator {
