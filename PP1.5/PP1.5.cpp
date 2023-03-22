@@ -15,12 +15,36 @@ const int SoL = sizeof(long) * 8;
 
 using json = nlohmann::json;
 
+void colored_mask_insert(std::vector<unsigned long>& self, int index) {
+    unsigned long& data = self.at(index / SoL);
+    data &= ~(1UL << (index % SoL));
+}
+
+bool colored_mask_has(std::vector<unsigned long>& self, int index) {
+    unsigned long& data = self.at(index / SoL);
+    return (data & (1UL << index % SoL)) == 0;
+}
+
+int colored_mask_size(std::vector<unsigned long>& self) {
+    int i = 0;
+    unsigned long* data = &(self.at(i));
+    unsigned long index = 0;
+
+    while (!_BitScanForward(&index, *data)) {
+        data = &(self.at(++i));
+    }
+
+    return (SoL * i) + (int)index;
+
+}
+
+
 class Graph {
 public:
     Graph(int size) {
         this->chunkSize = (size / (sizeof(long) * 8) ) + 1;
         this->nodes = size;
-        data.reserve(chunkSize * size);
+        //data.reserve(chunkSize * size);
         data.resize(chunkSize * size);
         std::fill(data.begin(), data.end(), ~0L);
     }
@@ -65,21 +89,28 @@ public:
     static int getChromaticNumber(Graph& G) {
 
         int chromeNum = 0;
-        std::set<int> colored = {};
 
-        for (int i = 0; i < G.nodes; i++) {
-            if (colored.contains(i)) continue;
+        std::vector<unsigned long> colored_mask(G.chunkSize);
+        std::fill(colored_mask.begin(), colored_mask.end(), ~0UL);
+
+        for (int i = 0; i < G.nodes; i = colored_mask_size(colored_mask)) {
+            //if (colored_mask_has(colored_mask, i)) continue;
+
             chromeNum++;
-            colored.insert(i);
-            if (colored.size() >= G.nodes) break;
+            colored_mask_insert(colored_mask, i);
+
+            if (colored_mask_size(colored_mask) >= G.nodes) {
+                break;
+            }
             for (int j = 0; j < G.chunkSize; j++) {
                 unsigned long& data = G.data.at((i * G.chunkSize) + j);
+                data &= colored_mask.at(j);
                 const int index = j * SoL;
                 unsigned long unadjusted = 0;
                 while (_BitScanForward(&unadjusted, data)) {
                     const int unadjustedIndex = index + unadjusted;
                     G.merge(i, unadjustedIndex);
-                    colored.insert(unadjustedIndex);
+                    colored_mask_insert(colored_mask, unadjustedIndex);
                 }
             }
         }

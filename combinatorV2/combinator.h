@@ -1,7 +1,11 @@
 #include <vector>
 #include <cmath>
 
-constexpr int BiL = sizeof(long) * 8;
+#include <iostream>
+#include <string>
+
+constexpr int BiL = sizeof(unsigned long long) * 8;
+
 
 class CombinatorV2 {
 public:
@@ -15,10 +19,14 @@ public:
 
 	void set(int index, unsigned int value);
 
+	std::string toString();
+
 private:
-	std::vector<unsigned long> data;
+	std::vector<unsigned long long> data;
 
 	const int blockSize;
 	const int blockCount;
 	const int MAX_VALUE;
+
+	int next_call_index = -1;
 };

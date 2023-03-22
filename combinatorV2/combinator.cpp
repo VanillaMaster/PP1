@@ -22,8 +22,25 @@ bool CombinatorV2::next() {
         this->set(i, val);
     }
 
+    if (++(this->next_call_index) % 100000 == 0) {
+        std::string res = "";
+        for (int i = 0; i < this->size(); i++) {
+            res += std::to_string(this->at(i));
+        }
+        std::cout << res << "::" << this->next_call_index << std::endl;
+    }
+
     return overflow;
 };
+
+std::string CombinatorV2::toString() {
+    std::string res = "";
+    for (int i = 0; i < this->size(); i++) {
+        res += std::to_string(this->at(i));
+    }
+    std::cout << this->data.at(0) << std::endl;
+    return res;
+}
 
 unsigned int CombinatorV2::at(int index) {
     if (this->MAX_VALUE == 0 && index < blockCount) { return 0; }
@@ -37,13 +54,13 @@ unsigned int CombinatorV2::at(int index) {
     const int RLShift = std::max(SLShift, 0); // Remaining Left Shift
     const int ORShift = std::max(-SLShift, 0);// Overflow Right Shift
 
-    const unsigned long LMask = ((~0UL) << (shift + RLShift)) >> RLShift;// Lower Mask
+    const unsigned long long LMask = ((~0UL) << (shift + RLShift)) >> RLShift;// Lower Mask
 
     const unsigned int lowerBits = (data.at(block) & LMask) >> shift;
 
     if (ORShift == 0) return lowerBits;
 
-    const unsigned long HMask = (~0UL) >> (BiL - ORShift);// Higher Mask
+    const unsigned long long HMask = (~0UL) >> (BiL - ORShift);// Higher Mask
 
     const unsigned int higherBits = (data.at(block + 1) & HMask) << (blockSize - ORShift);
 
@@ -60,8 +77,8 @@ void CombinatorV2::set(int index, unsigned int value) {
     const int RLShift = std::max(SLShift, 0);
     const int ORShift = std::max(-SLShift, 0);
 
-    const unsigned long LRMask = ~(((~0UL) << (shift + RLShift)) >> RLShift);
-    const unsigned long LSMask = ((unsigned long)value) << shift;
+    const unsigned long long LRMask = ~(((~0UL) << (shift + RLShift)) >> RLShift);
+    const unsigned long long LSMask = ((unsigned long long)value) << shift;
 
     data.at(block) &= LRMask;
     data.at(block) |= LSMask;
@@ -70,8 +87,8 @@ void CombinatorV2::set(int index, unsigned int value) {
 
     const int LBLen = blockSize - ORShift;
 
-    const unsigned long HRMask = (~0UL) << LBLen;
-    const unsigned long HSMask = ((unsigned long)value) >> LBLen;
+    const unsigned long long HRMask = static_cast<unsigned long long>((~0UL)) << LBLen;
+    const unsigned long long HSMask = ((unsigned long long)value) >> LBLen;
 
     const int nextBlock = block + 1;
 
