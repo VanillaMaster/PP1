@@ -19,6 +19,8 @@ public:
 
 	void set(int index, unsigned int value);
 
+	void offset(int partsCount, int partIndex);
+
 	std::string toString();
 
 private:
@@ -28,5 +30,5 @@ private:
 	const int blockCount;
 	const int MAX_VALUE;
 
-	int next_call_index = -1;
+	unsigned long long next_call_index = -1;
 };

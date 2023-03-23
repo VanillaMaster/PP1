@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
     auto G = loadGraph(argv[1]);
 
     auto start = std::chrono::high_resolution_clock::now();
-    int chromNum = getChromaticNumber(G);
+    int chromNum = getChromaticNumber(G,3);
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << chromNum << " calculated in: " << duration.count() << std::endl << "used method: 1";
