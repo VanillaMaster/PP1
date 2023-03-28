@@ -34,10 +34,6 @@ bool CombinatorV2::next() {
     return overflow;
 }
 
-void CombinatorV2::offset(int partsCount, int partIndex) {
-
-}
-
 std::string CombinatorV2::toString() {
     std::string res = "";
     for (int i = 0; i < this->size(); i++) {

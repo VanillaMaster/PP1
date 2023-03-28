@@ -142,7 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="combinator.cpp" />
+    <ClCompile Include="combinatorV2.cpp" />
+    <ClCompile Include="combinatorV3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="combinator.h" />

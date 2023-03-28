@@ -40,12 +40,19 @@ int getChromaticNumber(Graph& G, int chromNum = 1) {
 
 int main(int argc, char* argv[]) {
     
+    auto c = CombinatorV3(8, 2);
+    c.useRange(3, 0);
+    do {
+        std::cout << c.toString() << std::endl;
+    } while (!c.next());
+    return 0;
+
     if (argc < 2) { return 1; }
     
     auto G = loadGraph(argv[1]);
 
     auto start = std::chrono::high_resolution_clock::now();
-    int chromNum = getChromaticNumber(G,3);
+    int chromNum = getChromaticNumber(G, 3);
     auto stop = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
     std::cout << chromNum << " calculated in: " << duration.count() << std::endl << "used method: 1";

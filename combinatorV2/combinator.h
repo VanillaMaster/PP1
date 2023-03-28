@@ -1,5 +1,6 @@
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 #include <iostream>
 #include <string>
@@ -19,8 +20,6 @@ public:
 
 	void set(int index, unsigned int value);
 
-	void offset(int partsCount, int partIndex);
-
 	std::string toString();
 
 private:
@@ -31,4 +30,33 @@ private:
 	const int MAX_VALUE;
 
 	unsigned long long next_call_index = -1;
+};
+
+class CombinatorV3 {
+public:
+	CombinatorV3(int length, int count, std::string prefix = "");
+
+	int size();
+
+	bool next();
+
+	unsigned int at(int index);
+
+	void set(int index, unsigned int value);
+
+	void useRange(int partsCount, int partIndex);
+
+	std::string toString();
+private:
+
+	void setRange(std::vector<unsigned int>& self, int partsCount, int partIndex);
+
+	std::vector<unsigned int> state;
+	std::vector<unsigned int> limit;
+
+	const int MAX_VALUE;
+
+	unsigned long long next_call_index = -1;
+
+	const std::string prefix;
 };

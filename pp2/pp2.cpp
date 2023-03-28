@@ -4,6 +4,7 @@
 #include <thread>
 #include <chrono>
 #include <vector>
+#include <format>
 
 #include "../combinatorV2/combinator.h";
 #include "../Graph/Graph.h"
@@ -14,12 +15,14 @@ struct context {
     bool done;
     bool ok;
     int num;
+    int slice;
 };
 
 void threadFunction(context* ctx, Graph* G) {
 
     const int nodes = G->size();
-    auto c = CombinatorV2(nodes, ctx->num);
+    auto c = CombinatorV3(nodes, ctx->num, std::to_string(ctx->num) + "::" + std::to_string(ctx->slice) + ": ");
+    c.useRange(ThredNumber, ctx->slice);
 
     do {
         for (int i = 0; i < c.size(); i++) {
@@ -53,26 +56,33 @@ int main(int argc, char* argv[]) {
 
 
     context ctxs[ThredNumber];
-    for (size_t i = 0; i < ThredNumber; i++) { ctxs[i] = { true, false, 0 }; };
+    for (size_t i = 0; i < ThredNumber; i++) { ctxs[i] = { true, false, 0, 0 }; };
 
     bool keepSummon = true;
     bool keepWait = true;
 
     int chromeNumberToCheck = 1;
+    int slice = -1;
 
     while (keepWait) {
         keepWait = true;
         for (size_t i = 0; i < ThredNumber; i++) {
             if (ctxs[i].done) {
+                if (ctxs[i].num != 0) std::cout << std::to_string(ctxs[i].num) + "::" + std::to_string(ctxs[i].slice) + ": died\n";
 
                 if (ctxs[i].ok && keepSummon) {
                     keepSummon = false;
-                    //std::cout << "first result getted (stop summon)\n" << ctxs[i].num;
+                    std::cout << "first result getted (stop summon)\n" + std::to_string(ctxs[i].num);
                 }
 
                 if (keepSummon) {
-                    ctxs[i] = {false, false, chromeNumberToCheck++};
-                    //std::cout << ctxs[i].num << ": summoned" << std::endl;
+                    slice++;
+                    if (slice >= ThredNumber) {
+                        chromeNumberToCheck++;
+                        slice = 0;
+                    }
+                    ctxs[i] = {false, false, chromeNumberToCheck, slice };
+                    std::cout << std::to_string(chromeNumberToCheck) + "::" + std::to_string(slice) + ": summoned\n";
                     std::thread t(threadFunction, &(ctxs[i]), &G);
                     t.detach();
                 }

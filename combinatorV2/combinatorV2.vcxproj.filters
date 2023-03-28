@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="combinator.cpp">
+    <ClCompile Include="combinatorV2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="combinatorV3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
